@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+cargo fmt
+if [[ ! -n $(git status -s) ]]; then
+    cargo fix
+fi
+cargo clippy -- -D warnings

@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+### Example
+# 
+# scripts/expand --lib
+# scripts/expand --bin zero2prod
+#
+###
+
+cargo +nightly expand $@
