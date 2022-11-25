@@ -19,6 +19,24 @@ async fn health_check_works() {
     assert_eq!(Some(0), response.content_length());
 }
 
+#[tokio::test]
+async fn health_check_alias_works() {
+    // Arrange
+    let base_address = spawn_app();
+    let client = reqwest::Client::new();
+
+    // Act
+    let response = client
+        .get(format!("{}/health", &base_address))
+        .send()
+        .await
+        .expect("Failed to execute request.");
+
+    // Assert
+    assert!(response.status().is_success());
+    assert_eq!(Some(0), response.content_length());
+}
+
 // Launch application in the background
 fn spawn_app() -> String {
     let listener = std::net::TcpListener::bind("127.0.0.1:0").expect("Failed to bind random port");
