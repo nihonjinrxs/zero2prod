@@ -1,4 +1,9 @@
 #!/usr/bin/env bash
 
-cargo check
-cargo tarpaulin
+# Check first argument for "cov", "cover", "coverage", etc.
+if [[ "${1:0:3}" == "cov" ]]; then
+    # NOTE: does a clean build, so takes longer
+    cargo tarpaulin
+else
+    cargo test
+fi
