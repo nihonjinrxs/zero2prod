@@ -1,3 +1,6 @@
+#[cfg(test)]
+use pretty_assertions::assert_eq; // can also add assert_ne if needed
+
 #[tokio::test]
 async fn health_check_works() {
     // Arrange
