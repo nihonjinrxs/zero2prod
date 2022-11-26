@@ -1,0 +1,34 @@
+name: Setup sqlx and CLI
+description: Sets up the sqlx library and CLI to work with the given database
+inputs:
+  sqlx_version:
+    description: The version of sqlx to use (x.y.z)
+    type: string
+    required: true
+  sqlx_features:
+    description: A comma-separated string of sqlx features to enable
+    type: string
+    required: true
+runs:
+  using: composite
+  steps:
+    - name: Cache sqlx-cli
+      uses: actions/cache@v2
+      id: cache-sqlx
+      with:
+        path: |
+          ~/.cargo/bin/sqlx
+        key: ${{ runner.os }}-sqlx-${{ inputs.sqlx_version }}
+
+    - name: Install sqlx-cli 
+      uses: actions-rs/cargo@v1
+      if: steps.cache-sqlx.outputs.cache-hit == false
+      with:
+        command: install 
+        args: >
+          sqlx-cli
+          --force
+          --version=${{ inputs.sqlx_version }}
+          --features ${{ inputs.sqlx_features }}
+          --no-default-features
+          --locked

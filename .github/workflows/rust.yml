@@ -7,13 +7,33 @@ name: Rust
 
 env:
   CARGO_TERM_COLOR: always
+  SQLX_VERSION: 0.6.2
+  SQLX_FEATURES: "rustls,postgres"
 
 jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:12
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
     steps:
       - uses: actions/checkout@v2
+      - name: Setup sqlx
+        uses: ./.github/actions/setup_sqlx.yml
+        with:
+          sqlx_version: ${{ env.SQLX_VERSION }}
+          sqlx_features: ${{ env.SQLX_FEATURES }}
+      - name: Migrate database
+        run: |
+          sudo apt-get install libpq-dev -y
+          SKIP_DOCKER=true ./scripts/init_db
       - uses: actions-rs/cargo@v1
         with:
           command: test
@@ -31,8 +51,26 @@ jobs:
   clippy:
     name: Clippy
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:12
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
     steps:
       - uses: actions/checkout@v2
+      - name: Setup sqlx
+        uses: ./.github/actions/setup_sqlx.yml
+        with:
+          sqlx_version: ${{ env.SQLX_VERSION }}
+          sqlx_features: ${{ env.SQLX_FEATURES }}
+      - name: Migrate database
+        run: |
+          sudo apt-get install libpq-dev -y
+          SKIP_DOCKER=true ./scripts/init_db
       - uses: actions-rs/clippy-check@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -41,9 +79,27 @@ jobs:
   coverage:
     name: Code coverage
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:12
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: postgres
+        ports:
+          - 5432:5432
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+      - name: Setup sqlx
+        uses: ./.github/actions/setup_sqlx.yml
+        with:
+          sqlx_version: ${{ env.SQLX_VERSION }}
+          sqlx_features: ${{ env.SQLX_FEATURES }}
+      - name: Migrate database
+        run: |
+          sudo apt-get install libpq-dev -y
+          SKIP_DOCKER=true ./scripts/init_db
       - name: Run cargo-tarpaulin
         uses: actions-rs/tarpaulin@v0.1
         with:
