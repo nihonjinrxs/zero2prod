@@ -51,6 +51,7 @@ jobs:
   clippy:
     name: Clippy
     runs-on: ubuntu-latest
+    depends-on: test
     services:
       postgres:
         image: postgres:12
@@ -78,6 +79,7 @@ jobs:
 
   coverage:
     name: Code coverage
+    depends-on: test
     runs-on: ubuntu-latest
     services:
       postgres:
