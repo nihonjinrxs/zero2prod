@@ -74,6 +74,10 @@ async fn subscribe_returns_a_200_for_valid_form_data() {
     // Arrange
     let app = spawn_app().await;
     let client = reqwest::Client::new();
+    sqlx::query!("TRUNCATE TABLE subscriptions")
+        .execute(&app.db_pool)
+        .await
+        .expect("Failed to fetch a subscription.");
 
     // Act
     let body = "name=le%20guin&email=ursula_le_guin%40gmail.com";
@@ -107,6 +111,10 @@ async fn subscribe_returns_a_400_when_data_is_missing() {
         ("email=ursula_le_guin%40gmail.com", "missing the name"),
         ("", "missing both name and email"),
     ];
+    sqlx::query!("TRUNCATE TABLE subscriptions")
+        .execute(&app.db_pool)
+        .await
+        .expect("Failed to fetch a subscription.");
 
     for (invalid_body, error_message) in test_cases {
         // Act
