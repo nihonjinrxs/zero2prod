@@ -26,7 +26,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Setup sqlx
-        uses: ./.github/actions/setup_sqlx.yml
+        uses: ./.github/actions/setup_sqlx
         with:
           sqlx_version: ${{ env.SQLX_VERSION }}
           sqlx_features: ${{ env.SQLX_FEATURES }}
@@ -63,7 +63,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - name: Setup sqlx
-        uses: ./.github/actions/setup_sqlx.yml
+        uses: ./.github/actions/setup_sqlx
         with:
           sqlx_version: ${{ env.SQLX_VERSION }}
           sqlx_features: ${{ env.SQLX_FEATURES }}
@@ -92,7 +92,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
       - name: Setup sqlx
-        uses: ./.github/actions/setup_sqlx.yml
+        uses: ./.github/actions/setup_sqlx
         with:
           sqlx_version: ${{ env.SQLX_VERSION }}
           sqlx_features: ${{ env.SQLX_FEATURES }}
