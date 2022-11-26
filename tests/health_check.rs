@@ -1,6 +1,6 @@
 //! tests/health_check.rs
+use sqlx::{Connection, PgConnection};
 use std::net::TcpListener;
-use sqlx::{PgConnection, Connection};
 use zero2prod::configuration::get_configuration;
 
 #[cfg(test)]
@@ -72,7 +72,7 @@ async fn subscribe_returns_a_200_for_valid_form_data() {
         .send()
         .await
         .expect("Failed to execute request.");
-    
+
     // Assert
     assert_eq!(200, response.status().as_u16());
 
@@ -85,7 +85,6 @@ async fn subscribe_returns_a_200_for_valid_form_data() {
     assert_eq!(saved.name, "le guin");
 }
 
-
 #[tokio::test]
 async fn subscribe_returns_a_400_when_data_is_missing() {
     // Arrange
@@ -94,9 +93,9 @@ async fn subscribe_returns_a_400_when_data_is_missing() {
     let test_cases = vec![
         ("name=le%20guin", "missing the email"),
         ("email=ursula_le_guin%40gmail.com", "missing the name"),
-        ("", "missing both name and email")
+        ("", "missing both name and email"),
     ];
-    
+
     for (invalid_body, error_message) in test_cases {
         // Act
         let response = client
@@ -117,5 +116,3 @@ async fn subscribe_returns_a_400_when_data_is_missing() {
         );
     }
 }
-
-
